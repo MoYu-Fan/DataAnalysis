@@ -1,0 +1,46 @@
+                                      数据分析及机器学习中的各种奇巧淫技总结
+一.matplotlib
+
+1.在使用Matplotlib画图时，我遇到了一个尴尬的情况，那就是当x轴的标签名字很长的时候，在绘制图形时，发生了x轴标签互相重叠的情况。
+本文主要通过一个简单的示例，探索了以上描述问题的4种解决方法。
+
+方法一：拉长画布
+既然x轴标签是由于横向空间不足，导致发生了重叠，那么，我们只需要将图形的横向空间拉长即可，也就是设置一个更大的画布。
+ig = plt.figure(figsize=(12,4))    # 设置画布大小
+plt.bar(df['sport_type'], df['score'])
+
+方法二：调整标签字体大小
+方法二是方法一的逆向思路，既然可以调大画布，那么反过来，我们也可以调小x轴标签字体。
+plt.tick_params(axis='x', labelsize=8)    # 设置x轴标签大小
+plt.bar(df['sport_type'], df['score'])
+
+方法三：横纵颠倒
+只要我们将纵向柱状图改成横向柱状图，那么就不会存在这种问题。
+plt.barh(df['sport_type'], df['score'])    # 绘制横向柱状图
+
+方法四：标签旋转
+我们只需要将x轴的标签旋转一定的角度，就可以让其不再发生重叠。
+plt.bar(df['sport_type'], df['score'])
+plt.xticks(rotation=-15)    # 设置x轴标签旋转角度
+
+作者：数据医生
+链接：https://www.jianshu.com/p/01ed72b2aeee
+来源：简书
+
+2.feature_importance绘图
+
+# 构建函数：检测特征对回归器的贡献
+def plot_feature_importances(feature_importances, feature_names, color='red',title=None):
+    #重要性值标准化
+    feature_importances = 100.0*(feature_importances/max(feature_importances))
+    # 得分高低排序
+    index_sorted = np.flipud(np.argsort(feature_importances))
+    # x轴标签居中显示
+    pos = np.arange(index_sorted.shape[0])+0.5
+    # 画条形图
+    plt.figure(figsize=(15,4))
+    plt.bar(pos,feature_importances[index_sorted],align='center',color=color)
+    plt.xticks(pos,feature_names[index_sorted])
+    plt.ylabel("Relative Importance")
+    plt.title(title)
+    plt.show()
